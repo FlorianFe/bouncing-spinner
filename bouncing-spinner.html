@@ -1,0 +1,182 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../neon-animation/neon-animation-runner-behavior.html">
+<link rel="import" href="../neon-animation/animations/fade-in-animation.html">
+<link rel="import" href="../neon-animation/animations/fade-out-animation.html">
+
+<link rel="import" href="bouncing-animation.html">
+
+<!--
+`bouncing-spinner`
+A bouncing spinner element build with Polymer
+
+@demo demo/index.html
+-->
+
+<dom-module id="bouncing-spinner">
+  <template>
+    <style>
+
+      :host
+      {
+        display: block-inline;
+      }
+
+      @keyframes bounce
+      {
+        from
+        {
+          translateY(0px);
+        }
+
+        to
+        {
+          translateY(-20px)
+        }
+      }
+
+      circle
+      {
+        fill: var(--fill-color, #ddd);
+        stroke: var(--stroke-color, none);
+      }
+
+      #circle-1
+      {
+        animation: bounce 1s linear infinite;
+      }
+
+    </style>
+
+    <svg width$="[[_width]]" height$="[[_height]]">
+      <circle class="circle" id="circle-1" cx="10" cy="20" r$="[[_circleRadius]]"/>
+      <circle class="circle" id="circle-2" cx="25" cy="20" r$="[[_circleRadius]]"/>
+      <circle class="circle" id="circle-3" cx="40" cy="20" r$="[[_circleRadius]]"/>
+    </svg>
+  </template>
+
+  <script>
+    Polymer(
+    {
+      is: 'bouncing-spinner',
+      properties:
+      {
+        fade:
+        {
+          type: Boolean,
+          value: false
+        },
+        hidden:
+        {
+          type: Boolean,
+          value: false
+        },
+        _width:
+        {
+          type: Number,
+          value: 50
+        },
+        _height:
+        {
+          type: Number,
+          value: 30
+        },
+        _circleRadius:
+        {
+          type: Number,
+          value: 5
+        },
+        animationConfig:
+        {
+          value: function()
+          {
+            return {
+              "entry":
+              {
+                  name: "fade-in-animation",
+                  node: this,
+                  timing: {duration: 1000}
+              },
+              "exit":
+              {
+                  name: "fade-out-animation",
+                  node: this,
+                  timing: {duration: 1000}
+              },
+              "bounce":
+              [
+                {
+                  name: "bouncing-animation",
+                  node: this.$["circle-1"],
+                  timing:
+                  {
+                    duration: 2200,
+                    delay: 0
+                  }
+                },
+                {
+                  name: "bouncing-animation",
+                  node: this.$["circle-2"],
+                  timing:
+                  {
+                    duration: 2200,
+                    delay: 400
+                  }
+                },
+                {
+                  name: "bouncing-animation",
+                  node: this.$["circle-3"],
+                  timing:
+                  {
+                    duration: 2200,
+                    delay: 800
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      ready: function()
+      {
+        if(this.fade) this.playAnimation("entry", "entry");
+        this.playAnimation("bounce", "bounce");
+      },
+      behaviors:
+      [
+        Polymer.NeonAnimationRunnerBehavior
+      ],
+      listeners: {
+        'neon-animation-finish': '_onNeonAnimationFinish'
+      },
+      show: function()
+      {
+        this.hidden = false;
+
+        if(this.fade) this.playAnimation("entry", "entry");
+        this.playAnimation("bounce", "bounce");
+      },
+      hide: function()
+      {
+        if(this.fade) this.playAnimation("exit", "exit");
+      },
+      _onNeonAnimationFinish: function(event, animation)
+      {
+        if(animation === "bounce")
+        {
+          this.playAnimation("bounce", "bounce");
+        }
+
+        if(animation === "entry")
+        {
+          this.fire("faded-in", {});
+        }
+
+        if(animation === "exit")
+        {
+          this.hidden = true;
+          this.fire("faded-out", {});
+        }
+      }
+    });
+  </script>
+</dom-module>
