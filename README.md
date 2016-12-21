@@ -1,10 +1,23 @@
 # \<bouncing-spinner\>
 
+[![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://beta.webcomponents.org/element/florianfe/bouncing-spinner)
+
 A small bouncing spinner build with Polymer
 
 ## Install the Polymer-CLI
 
 First, make sure you have the [Polymer CLI](https://www.npmjs.com/package/polymer-cli) installed. Then run `polymer serve` to serve your application locally.
+
+<!--
+```
+<custom-element-demo>
+  <template>
+    <link rel="import" href="bouncing-spinner.html">
+    <bouncing-spinner fade></bouncing-spinner>
+  </template>
+</custom-element-demo>
+```
+-->
 
 ## Viewing Your Application
 
